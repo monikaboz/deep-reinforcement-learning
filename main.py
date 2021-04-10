@@ -27,7 +27,6 @@ if __name__ == "__main__":
                 for _ in range(MAX_EPISODE_LENGTH):
                     action = agent.get_action(frame_number, env.state)
                     processed_frame, reward, terminal = env.step(action)
-
                     frame_number += 1
                     epoch_frame += 1
                     episode_reward_sum += reward
@@ -62,7 +61,6 @@ if __name__ == "__main__":
                     terminal = False
 
                 action = agent.get_action(frame_number, env.state, evaluation=True)
-
                 _, reward, terminal = env.step(action)
                 evaluation_frame_number += 1
                 episode_reward_sum += reward
