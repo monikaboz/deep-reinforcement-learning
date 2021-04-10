@@ -44,12 +44,13 @@ if __name__ == "__main__":
 
                 rewards.append(episode_reward_sum)
 
-                if WRITE_TENSORBOARD:
-                    tf.summary.scalar('Reward', np.mean(rewards[-10:]), frame_number)
-                    tf.summary.scalar('Loss', np.mean(losses[-100:]), frame_number)
-                    writer.flush()
-                print(f'Average reward: {np.mean(rewards[-10:]):0.1f} @ Episode number: {str(len(rewards)).zfill(6)} '
-                      f'Frame number: {str(frame_number).zfill(8)}')
+                if len(rewards) % 10 == 0:
+                    if WRITE_TENSORBOARD:
+                        tf.summary.scalar('Reward', np.mean(rewards[-10:]), frame_number)
+                        tf.summary.scalar('Loss', np.mean(losses[-10:]), frame_number)
+                        writer.flush()
+                    print(f'Average reward: {np.mean(rewards[-10:]):0.1f} @ Episode number: {str(len(rewards)).zfill(6)} '
+                          f'Frame number: {str(frame_number).zfill(8)}')
 
             terminal = True
             evaluation_rewards = []
