@@ -28,10 +28,10 @@ class Environment:
             for _ in range(random.randint(0, self.no_op_steps)):
                 self.env.step(1)
 
-    def step(self, action, render_mode=None):
+    def step(self, action, return_original_frame=False):
         frame, reward, terminal, info = self.env.step(action)
-        frame = self.process_frame(frame)
-        self.state = np.append(self.state[:, :, 1:], frame, axis=2)
-        if render_mode == 'rgb_array':
-            return frame, reward, terminal, self.env.render(render_mode)
-        return frame, reward, terminal
+        processed_frame = self.process_frame(frame)
+        self.state = np.append(self.state[:, :, 1:], processed_frame, axis=2)
+        if return_original_frame:
+            return frame, reward, terminal
+        return processed_frame, reward, terminal
