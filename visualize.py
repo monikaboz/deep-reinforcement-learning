@@ -29,6 +29,6 @@ def generate_gif(folder_name, env, agent):
 env = Environment()
 replay_buffer = ReplayBuffer()
 agent = DDDQNAgent(env.env.action_space.n, replay_buffer)
-agent.load(SAVE_PATH + 'save-00047330')
+agent.load(SAVE_PATH + 'save-04036378')
 generate_gif(f'{ENV_NAME}-gif/', env, agent)
 # tensorboard --logdir {TENSORBOARD_PATH}
