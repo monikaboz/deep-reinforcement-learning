@@ -77,7 +77,7 @@ if __name__ == "__main__":
             if WRITE_TENSORBOARD:
                 tf.summary.scalar('Evaluation Reward', evaluation_avg_reward, frame_number)
                 writer.flush()
-            print(f'Average evaluation reward: {np.mean(rewards[-10:]):0.1f}')
+            print(f'Average evaluation reward: {evaluation_avg_reward:0.1f}')
 
             if SAVE_PATH is not None:
                 agent.save(f'{SAVE_PATH}/save-{str(frame_number).zfill(8)}')
