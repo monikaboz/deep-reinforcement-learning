@@ -4,7 +4,7 @@ from os import path
 import numpy as np
 from tensorflow.keras.models import load_model
 from shared.config import (LEARNING_RATE, BATCH_SIZE, MIN_REPLAY_BUFFER_SIZE, TOTAL_FRAMES, EPS_INITIAL, EPS_FINAL,
-                           EPS_ANNEALING_FRAMES, EPS_FINAL_FRAME, EPS_EVALUATION, TARGET_LEARNING_RATE)
+                           EPS_ANNEALING_FRAMES, EPS_FINAL_FRAME, EPS_EVALUATION)
 
 
 class Agent(ABC):

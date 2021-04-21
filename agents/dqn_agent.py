@@ -25,8 +25,8 @@ class DQNAgent(Agent):
 
     def train(self, discount_factor=DISCOUNT_FACTOR):
         states, actions, rewards, next_states, terminals = self.replay_buffer.get_minibatch(self.batch_size)
-        arg_q_max = self.model.predict(next_states).argmax(axis=1)
         next_q_values = self.model.predict(next_states)
+        arg_q_max = next_q_values.argmax(axis=1)
         double_q = next_q_values[range(self.batch_size), arg_q_max]
         target_q = rewards + (discount_factor * double_q * (1 - terminals))
 
@@ -42,4 +42,4 @@ class DQNAgent(Agent):
         return float(loss.numpy()), error
 
     def build_target_model(self, learning_rate=TARGET_LEARNING_RATE):
-        return None
+        return self.build_model(learning_rate)
