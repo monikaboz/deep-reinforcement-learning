@@ -17,21 +17,36 @@ class EnhancedDDDQNAgent(Agent):
         first_frame_input = Lambda(lambda layer: tf.slice(layer, [0, 0, 0, 0], [-1, -1, -1, 1]))(normalized_input)
         diff_frame_input = Subtract()([last_frame_input, first_frame_input])
 
+        conv2d_2 = Conv2D(64, 4, 2, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)
+        conv2d_3 = Conv2D(64, 3, 1, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)
+
         x = Conv2D(32, 8, 4, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(
             normalized_input)
-        x = Conv2D(64, 4, 2, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(x)
-        x = Conv2D(64, 3, 1, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(x)
-        x = Conv2D(1024, 7, 1, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(x)
+        x = conv2d_2(x)
+        x = conv2d_3(x)
+        x = Conv2D(512, 7, 1, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(x)
 
         val_stream, adv_stream = Lambda(lambda w: tf.split(w, 2, 3))(x)
 
-        val_x = Dense(512, kernel_initializer=VarianceScaling(scale=2.))(last_frame_input)
-        val_stream = Concatenate()([Flatten()(val_stream), Flatten()(val_x)])
+        val_x = Conv2D(32, 8, 4, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(
+            last_frame_input)
+        val_x = conv2d_2(val_x)
+        val_x = conv2d_3(val_x)
+        val_x = Conv2D(256, 7, 1, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(
+            val_x)
+
+        val_stream = Concatenate()([val_stream, val_x])
         val_stream = Flatten()(val_stream)
         val = Dense(1, kernel_initializer=VarianceScaling(scale=2.))(val_stream)
 
-        adv_x = Dense(512, kernel_initializer=VarianceScaling(scale=2.))(diff_frame_input)
-        adv_stream = Concatenate()([Flatten()(adv_stream), Flatten()(adv_x)])
+        adv_x = Conv2D(32, 8, 4, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(
+            diff_frame_input)
+        adv_x = conv2d_2(adv_x)
+        adv_x = conv2d_3(adv_x)
+        adv_x = Conv2D(256, 7, 1, kernel_initializer=VarianceScaling(scale=2.), activation='relu', use_bias=False)(
+            adv_x)
+
+        adv_stream = Concatenate()([adv_stream, adv_x])
         adv_stream = Flatten()(adv_stream)
         adv = Dense(self.n_actions, kernel_initializer=VarianceScaling(scale=2.))(adv_stream)
 
