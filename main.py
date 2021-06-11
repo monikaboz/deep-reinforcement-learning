@@ -1,6 +1,9 @@
 import numpy as np
 import tensorflow as tf
+from agents.dqn_agent import DQNAgent
+from agents.ddqn_agent import DDQNAgent
 from agents.dddqn_agent import DDDQNAgent
+from agents.split_dddqn_agent import SplitDDDQNAgent
 from shared.config import (SAVE_PATH, WRITE_TENSORBOARD, TENSORBOARD_PATH, TOTAL_FRAMES, MAX_EPISODE_LENGTH,
                            UPDATE_FREQ, MIN_REPLAY_BUFFER_SIZE, TARGET_UPDATE_FREQ, EVALUATION_FREQ, EVALUATION_LENGTH)
 from shared.environment import Environment
@@ -26,11 +29,11 @@ if __name__ == "__main__":
                 episode_reward_sum = 0
                 for _ in range(MAX_EPISODE_LENGTH):
                     action = agent.get_action(frame_number, env.state)
-                    processed_frame, reward, terminal = env.step(action)
+                    processed_frame, reward, clipped_reward, terminal = env.step(action)
                     frame_number += 1
                     epoch_frame += 1
                     episode_reward_sum += reward
-                    agent.add_experience(processed_frame[:, :, 0], action, reward, terminal)
+                    agent.add_experience(processed_frame[:, :, 0], action, clipped_reward, terminal)
 
                     if frame_number % UPDATE_FREQ == 0 and agent.replay_buffer.count > MIN_REPLAY_BUFFER_SIZE:
                         loss, _ = agent.train()
@@ -62,7 +65,7 @@ if __name__ == "__main__":
                     terminal = False
 
                 action = agent.get_action(frame_number, env.state, evaluation=True)
-                _, reward, terminal = env.step(action)
+                _, reward, _, terminal = env.step(action)
                 evaluation_frame_number += 1
                 episode_reward_sum += reward
 

@@ -33,5 +33,14 @@ class Environment:
         processed_frame = self.process_frame(frame)
         self.state = np.append(self.state[:, :, 1:], processed_frame, axis=2)
         if return_original_frame:
-            return frame, reward, terminal
-        return processed_frame, reward, terminal
+            return frame, reward, Environment.clip_reward(reward), terminal
+        return processed_frame, reward, Environment.clip_reward(reward), terminal
+
+    @staticmethod
+    def clip_reward(reward):
+        if reward > 0:
+            return 1
+        elif reward == 0:
+            return 0
+        else:
+            return -1
