@@ -2,5 +2,5 @@
 ### Value-based algorithms: 
   - DQN
   - Double DQN
-  - DQN with dueling architecture
-  - Split double DQN (experimental)
+  - Double DQN with dueling architecture
+  - Double DQN with split dueling architecture (experimental)
